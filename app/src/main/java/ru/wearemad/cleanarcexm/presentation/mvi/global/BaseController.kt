@@ -1,5 +1,6 @@
 package ru.wearemad.cleanarcexm.presentation.mvi.global
 
+import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View

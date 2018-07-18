@@ -24,4 +24,10 @@ class MainActivity : BaseActivity() {
             router.setRoot(RouterTransaction.with(ContactsController()))
         }
     }
+
+    override fun onBackPressed() {
+        if (router.handleBack().not()) {
+            super.onBackPressed()
+        }
+    }
 }

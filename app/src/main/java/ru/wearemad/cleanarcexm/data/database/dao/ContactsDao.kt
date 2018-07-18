@@ -34,7 +34,7 @@ abstract class ContactsDao {
 
     @Query("SELECT * FROM ${ContactDetailsEntity.TABLE_NAME} " +
             " WHERE ${ContactDetailsEntity.COLUMN_ID} = :contactId")
-    abstract fun getContactDetails(contactId: Long): ContactDetailsEntity
+    abstract fun getContactDetails(contactId: Long): List<ContactDetailsEntity>
 
     @Query("DELETE FROM ${ContactDetailsEntity.TABLE_NAME}" +
             " WHERE ${ContactDetailsEntity.COLUMN_ID} = :contactId")

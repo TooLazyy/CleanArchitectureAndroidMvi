@@ -9,6 +9,7 @@ import ru.wearemad.cleanarcexm.data.database.mappers.ContactDetailsMapper
 import ru.wearemad.cleanarcexm.domain.commands.GetContactDetailsCommand
 import ru.wearemad.cleanarcexm.domain.global.models.ContactDetails
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactDetailsRepository
+import ru.wearemad.cleanarcexm.extensions.applyObservableCompute
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,18 +32,32 @@ class ContactDetailsRepositoryImpl
     }
 
     override fun getContactDetailsFromCache(contactId: Long): Observable<ContactDetails> {
-        return Observable.fromCallable { appDatabase.userContactsDao().getContactDetails(contactId) }
-                .subscribeOn(Schedulers.io())
-                .map { contactMapper.fromEntity(it) }
+        return Observable.fromCallable {
+            var a = 0
+            a += 1
+            val b = appDatabase.userContactsDao().getContactDetails(contactId)
+            b
+        }
+                .filter { it.isNotEmpty() }
+                .applyObservableCompute()
+                .map {
+                    contactMapper.fromEntity(it[0])
+                }
     }
 
-    override fun updateContactDetailsCache(contact: ContactDetails): Completable {
-        return Observable.fromCallable { contactMapper.toEntity(contact) }
-                .subscribeOn(Schedulers.io())
+    override fun updateContactDetailsCache(contact: ContactDetails) {
+        Observable.fromCallable { contactMapper.toEntity(contact) }
+                .observeOn(Schedulers.io())
                 .map {
                     appDatabase.userContactsDao().updateContactDetails(it)
                     0
                 }
                 .ignoreElements()
+                .subscribe(
+                        {},
+                        {
+                            it.printStackTrace()
+                        }
+                )
     }
 }

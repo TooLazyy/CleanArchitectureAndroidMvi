@@ -10,5 +10,5 @@ interface ContactListRepository {
 
     fun getContactsListFromCache(): Observable<List<Contact>>
 
-    fun updateContactsListCache(contacts: List<Contact>): Completable
+    fun updateContactsListCache(contacts: List<Contact>)
 }

@@ -10,5 +10,5 @@ interface ContactDetailsRepository {
 
     fun getContactDetailsFromCache(contactId: Long): Observable<ContactDetails>
 
-    fun updateContactDetailsCache(contact: ContactDetails): Completable
+    fun updateContactDetailsCache(contact: ContactDetails)
 }

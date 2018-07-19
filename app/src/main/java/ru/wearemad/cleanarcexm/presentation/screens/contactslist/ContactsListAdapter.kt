@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ru.wearemad.cleanarcexm.R
 import ru.wearemad.cleanarcexm.domain.global.models.Contact
+import ru.wearemad.cleanarcexm.extensions.bindView
 
 class ContactsListAdapter(
         context: Context,
-        private val data: MutableList<Contact>
+        val data: MutableList<Contact>
 ) : RecyclerView.Adapter<ContactsListAdapter.ItemHolder>() {
 
     private val inflater = LayoutInflater.from(context)
@@ -35,8 +36,8 @@ class ContactsListAdapter(
 
     inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val tvName = view.findViewById<TextView>(R.id.tvName)
-        private val tvPhone = view.findViewById<TextView>(R.id.tvPhone)
+        private val tvName by bindView<TextView>(R.id.tvName)
+        private val tvPhone by bindView<TextView>(R.id.tvPhone)
 
         init {
             view.setOnClickListener {

@@ -1,10 +1,9 @@
 package ru.wearemad.cleanarcexm.di.global
 
 import dagger.Component
-import ru.wearemad.cleanarcexm.domain.commands.GetContactDetailsCommand
-import ru.wearemad.cleanarcexm.domain.commands.GetContactsListCommand
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactDetailsRepository
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactListRepository
+import ru.wearemad.cleanarcexm.domain.global.repositories.ContactsSearchRepository
 import javax.inject.Singleton
 
 @Singleton
@@ -16,7 +15,5 @@ interface ApplicationComponent {
 
     fun contactDetailsRepository(): ContactDetailsRepository
 
-    fun contactsListCmd(): GetContactsListCommand
-
-    fun contactDetailsCmd(): GetContactDetailsCommand
+    fun contactsSearchRepository(): ContactsSearchRepository
 }

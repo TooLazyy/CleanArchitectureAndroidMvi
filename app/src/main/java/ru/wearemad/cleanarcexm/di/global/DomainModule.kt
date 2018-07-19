@@ -14,6 +14,6 @@ class DomainModule {
             GetContactsListCommand = GetContactsListCommand(api)
 
     @Provides
-    fun provideContactDetailssCmd(api: ContactsApi):
+    fun provideContactDetailsCmd(api: ContactsApi):
             GetContactDetailsCommand = GetContactDetailsCommand(api)
 }

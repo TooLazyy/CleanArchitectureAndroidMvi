@@ -1,13 +1,12 @@
 package ru.wearemad.cleanarcexm.presentation.mvi.global
 
-import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.Controller
 import com.hannesdorfmann.mosby3.MviController
 import com.hannesdorfmann.mosby3.mvi.MviPresenter
+import ru.wearemad.cleanarcexm.extensions.KotterKnife
 
 abstract class BaseController<V : BaseView, P : MviPresenter<V, VS>, VS : BaseViewState> :
         MviController<V, P>() {
@@ -25,13 +24,13 @@ abstract class BaseController<V : BaseView, P : MviPresenter<V, VS>, VS : BaseVi
         setRetainMode()
         //set lifecycle listener
         addLifecycleListener(postCreateViewListener)
-        val itemView = inflater.inflate(getLayoutId(), container, false)
-        return itemView
+        return inflater.inflate(getLayoutId(), container, false)
     }
 
     override fun onDestroyView(view: View) {
         //remove lifecycle listener
         removeLifecycleListener(postCreateViewListener)
+        KotterKnife.reset(this)
         super.onDestroyView(view)
     }
 

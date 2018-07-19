@@ -12,10 +12,13 @@ import ru.wearemad.cleanarcexm.data.database.mappers.ContactDetailsMapper
 import ru.wearemad.cleanarcexm.data.database.mappers.ContactMapper
 import ru.wearemad.cleanarcexm.data.repositories.ContactDetailsRepositoryImpl
 import ru.wearemad.cleanarcexm.data.repositories.ContactsListRepositoryImpl
+import ru.wearemad.cleanarcexm.data.repositories.ContactsSearchRepositoryImpl
 import ru.wearemad.cleanarcexm.domain.commands.GetContactDetailsCommand
 import ru.wearemad.cleanarcexm.domain.commands.GetContactsListCommand
+import ru.wearemad.cleanarcexm.domain.global.models.Contact
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactDetailsRepository
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactListRepository
+import ru.wearemad.cleanarcexm.domain.global.repositories.ContactsSearchRepository
 import javax.inject.Singleton
 
 @Module
@@ -55,4 +58,8 @@ class DataModule {
             mapper: ContactDetailsMapper):
             ContactDetailsRepository =
             ContactDetailsRepositoryImpl(db, cmd, mapper)
+
+    @Provides
+    fun provideContactsSearchRepository():
+            ContactsSearchRepository = ContactsSearchRepositoryImpl()
 }

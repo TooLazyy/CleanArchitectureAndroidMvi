@@ -32,12 +32,7 @@ class ContactDetailsRepositoryImpl
     }
 
     override fun getContactDetailsFromCache(contactId: Long): Observable<ContactDetails> {
-        return Observable.fromCallable {
-            var a = 0
-            a += 1
-            val b = appDatabase.userContactsDao().getContactDetails(contactId)
-            b
-        }
+        return Observable.fromCallable { appDatabase.userContactsDao().getContactDetails(contactId) }
                 .filter { it.isNotEmpty() }
                 .applyObservableCompute()
                 .map {

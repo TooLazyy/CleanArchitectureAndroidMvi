@@ -32,6 +32,10 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
 
     private var adapter: ContactsListAdapter? = null
 
+    companion object {
+        const val TAG = "ContactsController"
+    }
+
     override fun getLayoutId() = R.layout.screen_contacts_list
 
     override fun initPresenter() = DaggerContactsListComponent.builder()
@@ -43,7 +47,7 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
     override fun onViewCreated(itemView: View) {
         refreshContactsIntent.onNext(Unit)
         ivSearch.setOnClickListener {
-            router.pushController(
+            getParentRouter()?.pushController(
                     RouterTransaction.with(
                             ContactsSearchController(adapter?.data ?: listOf())
                     ).tag(ContactsSearchController.TAG)
@@ -67,7 +71,7 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
             }
             is ContactsListVS.DataState -> {
                 loading.visibility = View.GONE
-                if (adapter == null) {
+                if (adapter == null || recycler.adapter == null) {
                     adapter = ContactsListAdapter(activity as Context,
                             state.contacts.toMutableList())
                     recycler.layoutManager = LinearLayoutManager(activity)
@@ -83,7 +87,7 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
     }
 
     override fun openDetailedContact(id: Long) {
-        router.pushController(
+        getParentRouter()?.pushController(
                 RouterTransaction.with(
                         ContactDetailsController(id)
                 ).tag(ContactDetailsController.TAG)

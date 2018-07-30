@@ -11,6 +11,8 @@ import ru.wearemad.cleanarcexm.extensions.KotterKnife
 abstract class BaseController<V : BaseView, P : MviPresenter<V, VS>, VS : BaseViewState> :
         MviController<V, P>() {
 
+    var mHandleBack = false
+
     private val postCreateViewListener: Controller.LifecycleListener =
             object : Controller.LifecycleListener() {
                 override fun postCreateView(controller: Controller, view: View) {
@@ -32,6 +34,12 @@ abstract class BaseController<V : BaseView, P : MviPresenter<V, VS>, VS : BaseVi
         removeLifecycleListener(postCreateViewListener)
         KotterKnife.reset(this)
         super.onDestroyView(view)
+    }
+
+    fun getParentRouter() = parentController?.router
+
+    override fun handleBack(): Boolean {
+        return mHandleBack
     }
 
     abstract fun onViewCreated(itemView: View)

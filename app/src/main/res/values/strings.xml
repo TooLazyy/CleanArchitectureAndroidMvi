@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CleanArcExm</string>
+
+    <string name="menu_main">Main</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_favorites">Favorites</string>
 </resources>

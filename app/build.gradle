@@ -69,6 +69,9 @@ dependencies {
     //retrofit
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
+    //bottom navigation
+    implementation'com.aurelhubert:ahbottomnavigation:2.1.0'
+
     //tests
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

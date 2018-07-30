@@ -1,13 +1,13 @@
 package ru.wearemad.cleanarcexm
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.FrameLayout
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 import ru.wearemad.cleanarcexm.presentation.base.BaseActivity
-import ru.wearemad.cleanarcexm.presentation.screens.contactslist.ContactsController
+import ru.wearemad.cleanarcexm.presentation.screens.main.MainController
 
 class MainActivity : BaseActivity() {
 
@@ -21,7 +21,8 @@ class MainActivity : BaseActivity() {
         router = Conductor.attachRouter(this, container, savedInstanceState)
 
         if(router.hasRootController().not()) {
-            router.setRoot(RouterTransaction.with(ContactsController()))
+            router.setRoot(RouterTransaction.with(MainController()).tag(MainController.TAG)
+                    .pushChangeHandler(FadeChangeHandler()))
         }
     }
 

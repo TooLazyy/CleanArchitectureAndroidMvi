@@ -4,15 +4,19 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import ru.wearemad.cleanarcexm.MyApp
 import ru.wearemad.cleanarcexm.R
 import ru.wearemad.cleanarcexm.di.contactslist.ContactsListModule
 import ru.wearemad.cleanarcexm.di.contactslist.DaggerContactsListComponent
 import ru.wearemad.cleanarcexm.extensions.bindView
+import ru.wearemad.cleanarcexm.presentation.changehandlers.CircularRevealChangeHandlerCompat
+import ru.wearemad.cleanarcexm.presentation.changehandlers.CircularRevealChangeHandlerCompatJ
 import ru.wearemad.cleanarcexm.presentation.mvi.contactslist.ContactsListPresenter
 import ru.wearemad.cleanarcexm.presentation.mvi.contactslist.ContactsListVS
 import ru.wearemad.cleanarcexm.presentation.mvi.contactslist.ContactsListView
@@ -25,10 +29,13 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
         ContactsListView {
 
     private val refreshContactsIntent = PublishSubject.create<Unit>()
+    private val updateContactIntent = PublishSubject.create<Pair<Long, Boolean>>()
+    private val updateFavoritesIntent = PublishSubject.create<Unit>()
 
     private val ivSearch: View by bindView(R.id.ivSearch)
     private val loading: View by bindView(R.id.loading)
     private val recycler: RecyclerView by bindView(R.id.recycler)
+    private val root: ViewGroup by bindView(R.id.contacts_root)
 
     private var adapter: ContactsListAdapter? = null
 
@@ -49,10 +56,12 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
         ivSearch.setOnClickListener {
             getParentRouter()?.pushController(
                     RouterTransaction.with(
-                            ContactsSearchController(adapter?.data ?: listOf())
+                            ContactsSearchController(
+                                    adapter?.data ?: listOf(),
+                                    adapter?.favorites ?: hashSetOf())
                     ).tag(ContactsSearchController.TAG)
-                            .pushChangeHandler(FadeChangeHandler())
-                            .popChangeHandler(FadeChangeHandler())
+                            .pushChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
+                            .popChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
             )
         }
     }
@@ -73,15 +82,27 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
                 loading.visibility = View.GONE
                 if (adapter == null || recycler.adapter == null) {
                     adapter = ContactsListAdapter(activity as Context,
-                            state.contacts.toMutableList())
+                            state.data.first.toMutableList(),
+                            state.data.second)
                     recycler.layoutManager = LinearLayoutManager(activity)
                     recycler.adapter = adapter
                     adapter!!.onItemClick = {
                         openDetailedContact(it)
                     }
+                    adapter!!.onFavoriteClick = { id, favorite ->
+                        updateContactIntent.onNext(Pair(id, favorite.not()))
+                    }
                 } else {
-                    adapter!!.updateData(state.contacts)
+                    adapter!!.favorites = state.data.second
+                    adapter!!.updateData(state.data.first)
                 }
+            }
+            is ContactsListVS.UpdateContactState -> {
+                loading.visibility = View.GONE
+            }
+            is ContactsListVS.UpdateFavoritesState -> {
+                adapter?.favorites = state.favorites
+                adapter?.notifyDataSetChanged()
             }
         }
     }
@@ -100,5 +121,14 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
         retainViewMode = RetainViewMode.RETAIN_DETACH
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        updateFavoritesIntent.onNext(Unit)
+    }
+
     override fun loadContactsIntent() = refreshContactsIntent
+
+    override fun updateContactIntent() = updateContactIntent
+
+    override fun updateFavoritesIntent() = updateFavoritesIntent
 }

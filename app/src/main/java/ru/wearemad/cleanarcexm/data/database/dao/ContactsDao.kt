@@ -2,7 +2,6 @@ package ru.wearemad.cleanarcexm.data.database.dao
 
 import android.arch.persistence.room.*
 import android.arch.persistence.room.OnConflictStrategy.*
-import io.reactivex.Observable
 import ru.wearemad.cleanarcexm.data.database.entity.ContactDetailsEntity
 import ru.wearemad.cleanarcexm.data.database.entity.ContactEntity
 

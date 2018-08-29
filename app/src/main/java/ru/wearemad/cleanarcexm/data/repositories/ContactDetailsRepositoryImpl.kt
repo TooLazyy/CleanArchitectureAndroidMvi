@@ -33,8 +33,8 @@ class ContactDetailsRepositoryImpl
 
     override fun getContactDetailsFromCache(contactId: Long): Observable<ContactDetails> {
         return Observable.fromCallable { appDatabase.userContactsDao().getContactDetails(contactId) }
+                .subscribeOn(Schedulers.computation())
                 .filter { it.isNotEmpty() }
-                .applyObservableCompute()
                 .map {
                     contactMapper.fromEntity(it[0])
                 }
@@ -42,7 +42,7 @@ class ContactDetailsRepositoryImpl
 
     override fun updateContactDetailsCache(contact: ContactDetails) {
         Observable.fromCallable { contactMapper.toEntity(contact) }
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
                 .map {
                     appDatabase.userContactsDao().updateContactDetails(it)
                     0

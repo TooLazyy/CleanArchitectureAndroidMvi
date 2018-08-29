@@ -8,8 +8,10 @@ sealed class ContactsSearchVS : BaseViewState {
     object LoadingState : ContactsSearchVS()
 
     data class DataState(
-            val contacts: List<Contact>
+            val data: Pair<List<Contact>, HashSet<Long>>
     ) : ContactsSearchVS()
+
+    object UpdateContactState : ContactsSearchVS()
 
     data class ErrorState(
             val error: String

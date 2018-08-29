@@ -10,4 +10,6 @@ interface ContactsSearchView : BaseView {
     fun search(query: String)
 
     fun openDetailedContact(id: Long)
+
+    fun updateContactIntent(): Observable<Pair<Long, Boolean>>
 }

@@ -8,4 +8,8 @@ interface ContactsListView : BaseView {
     fun loadContactsIntent() : Observable<Unit>
 
     fun openDetailedContact(id: Long)
+
+    fun updateContactIntent(): Observable<Pair<Long, Boolean>>
+
+    fun updateFavoritesIntent(): Observable<Unit>
 }

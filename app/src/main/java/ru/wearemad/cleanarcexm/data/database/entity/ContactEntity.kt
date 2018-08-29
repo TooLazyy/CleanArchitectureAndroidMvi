@@ -20,5 +20,6 @@ data class ContactEntity(
 ) {
     companion object {
         const val TABLE_NAME = "contact_table"
+        const val COLUMN_ID = "id"
     }
 }

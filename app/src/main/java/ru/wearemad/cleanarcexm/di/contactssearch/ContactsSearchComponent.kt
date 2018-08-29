@@ -13,5 +13,7 @@ interface ContactsSearchComponent {
 
     fun contacts(): List<Contact>
 
+    fun favorites(): HashSet<Long>
+
     fun presenter(): ContactsSearchPresenter
 }

@@ -4,6 +4,7 @@ import dagger.Component
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactDetailsRepository
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactListRepository
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactsSearchRepository
+import ru.wearemad.cleanarcexm.domain.global.repositories.FavoritesRepository
 import javax.inject.Singleton
 
 @Singleton
@@ -16,4 +17,6 @@ interface ApplicationComponent {
     fun contactDetailsRepository(): ContactDetailsRepository
 
     fun contactsSearchRepository(): ContactsSearchRepository
+
+    fun favoritesRepository(): FavoritesRepository
 }

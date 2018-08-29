@@ -8,7 +8,13 @@ sealed class ContactsListVS : BaseViewState {
     object LoadingState : ContactsListVS()
 
     data class DataState(
-            val contacts: List<Contact>
+            val data: Pair<List<Contact>, HashSet<Long>>
+    ) : ContactsListVS()
+
+    object UpdateContactState : ContactsListVS()
+
+    data class UpdateFavoritesState(
+            val favorites: HashSet<Long>
     ) : ContactsListVS()
 
     data class ErrorState(

@@ -33,15 +33,19 @@ class ContactsSearchController :
     }
 
     private var mContacts = listOf<Contact>()
+    private var mFavorites = hashSetOf<Long>()
 
     constructor() : super()
 
-    constructor(contacts: List<Contact>) : super() {
+    constructor(contacts: List<Contact> = listOf(),
+                favs: HashSet<Long> = hashSetOf()) : super() {
         mContacts = contacts
+        mFavorites = favs
     }
 
 
     private val searchIntent = PublishSubject.create<String>()
+    private val updateContactIntent = PublishSubject.create<Pair<Long, Boolean>>()
 
     private val loading: View by bindView(R.id.loading)
     private val recycler: RecyclerView by bindView(R.id.recycler)
@@ -72,12 +76,15 @@ class ContactsSearchController :
     private fun initAdapter() {
         if (adapter == null) {
             adapter = ContactsListAdapter(activity as Context,
-                    mutableListOf())
+                    mutableListOf(), hashSetOf())
             adapter!!.onItemClick = {
                 openDetailedContact(it)
             }
+            adapter!!.onFavoriteClick = { id, favorite ->
+                updateContactIntent.onNext(Pair(id, favorite.not()))
+            }
             //if adapter is null, get initial data
-            render(ContactsSearchVS.DataState(mContacts))
+            render(ContactsSearchVS.DataState(Pair(mContacts, mFavorites)))
         }
     }
 
@@ -85,7 +92,7 @@ class ContactsSearchController :
 
     override fun initPresenter() = DaggerContactsSearchComponent.builder()
             .applicationComponent(MyApp.appComponent)
-            .contactsSearchModule(ContactsSearchModule(mContacts))
+            .contactsSearchModule(ContactsSearchModule(mContacts, mFavorites))
             .build()
             .presenter()
 
@@ -103,7 +110,11 @@ class ContactsSearchController :
             }
             is ContactsSearchVS.DataState -> {
                 loading.visibility = View.GONE
-                adapter!!.updateData(state.contacts)
+                adapter!!.updateData(state.data.first)
+                adapter!!.favorites = state.data.second
+            }
+            is ContactsSearchVS.UpdateContactState -> {
+                loading.visibility = View.GONE
             }
         }
     }
@@ -132,5 +143,7 @@ class ContactsSearchController :
     }
 
     override fun getSearchIntent() = searchIntent
+
+    override fun updateContactIntent() = updateContactIntent
 
 }

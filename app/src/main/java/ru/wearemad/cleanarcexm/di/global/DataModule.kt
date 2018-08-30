@@ -66,6 +66,6 @@ class DataModule {
             ContactsSearchRepository = ContactsSearchRepositoryImpl()
 
     @Provides
-    fun provideFavoritesRepository(db: AppDatabase):
-            FavoritesRepository = FavoritesRepositoryImpl(db)
+    fun provideFavoritesRepository(db: AppDatabase, mapper: ContactMapper):
+            FavoritesRepository = FavoritesRepositoryImpl(db, mapper)
 }

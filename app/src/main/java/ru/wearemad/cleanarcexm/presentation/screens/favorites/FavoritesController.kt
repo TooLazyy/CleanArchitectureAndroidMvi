@@ -20,6 +20,7 @@ import ru.wearemad.cleanarcexm.presentation.mvi.favorites.FavoritesVS
 import ru.wearemad.cleanarcexm.presentation.mvi.favorites.FavoritesView
 import ru.wearemad.cleanarcexm.presentation.mvi.global.BaseController
 import ru.wearemad.cleanarcexm.presentation.mvi.global.BaseViewState
+import ru.wearemad.cleanarcexm.presentation.screens.contactsdetails.ContactDetailsController
 import ru.wearemad.cleanarcexm.presentation.screens.contactslist.ContactsListAdapter
 import ru.wearemad.cleanarcexm.presentation.screens.contactssearch.ContactsSearchController
 
@@ -29,12 +30,12 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
     private val updateContactIntent = PublishSubject.create<Pair<Long, Boolean>>()
     private val updateFavoritesIntent = PublishSubject.create<Unit>()
 
-    private val ivSearch: View by bindView(R.id.ivSearch)
+    private val ivSearch: View by bindView(R.id.ivSearch1)
     private val loading: View by bindView(R.id.loading)
     private val recycler: RecyclerView by bindView(R.id.recycler)
     private val root: ViewGroup by bindView(R.id.favorites_root)
 
-    private var adapter: ContactsListAdapter? = null
+    private var adapter: FavoritesAdapter? = null
 
     override fun getLayoutId() = R.layout.screen_favorites
 
@@ -54,7 +55,7 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
                     RouterTransaction.with(
                             ContactsSearchController(
                                     adapter?.data ?: listOf(),
-                                    adapter?.favorites ?: hashSetOf())
+                                    hashSetOf())
                     ).tag(ContactsSearchController.TAG)
                             .pushChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
                             .popChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
@@ -77,16 +78,15 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
             is FavoritesVS.DataState -> {
                 loading.visibility = View.GONE
                 if (adapter == null || recycler.adapter == null) {
-                    adapter = ContactsListAdapter(activity as Context,
-                            state.data.toMutableList(),
-                            hashSetOf())
+                    adapter = FavoritesAdapter(activity as Context,
+                            state.data.toMutableList())
                     recycler.layoutManager = LinearLayoutManager(activity)
                     recycler.adapter = adapter
                     adapter!!.onItemClick = {
                         openDetailedContact(it)
                     }
-                    adapter!!.onFavoriteClick = { id, favorite ->
-                        updateContactIntent.onNext(Pair(id, favorite.not()))
+                    adapter!!.onFavoriteClick = {
+                        updateContactIntent.onNext(Pair(it, false))
                     }
                 } else {
                     adapter!!.updateData(state.data)
@@ -96,7 +96,7 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
                 loading.visibility = View.GONE
             }
             is FavoritesVS.UpdateFavoritesState -> {
-                adapter?.favorites = state.favorites
+                //adapter?.favorites = state.favorites
                 adapter?.notifyDataSetChanged()
             }
         }
@@ -105,10 +105,20 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
     override fun loadContactsIntent() = refreshContactsIntent
 
     override fun openDetailedContact(id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getParentRouter()?.pushController(
+                RouterTransaction.with(
+                        ContactDetailsController(id)
+                ).tag(ContactDetailsController.TAG)
+                        .pushChangeHandler(FadeChangeHandler())
+                        .popChangeHandler(FadeChangeHandler())
+        )
     }
 
     override fun updateContactIntent() = updateContactIntent
 
     override fun updateFavoritesIntent() = updateFavoritesIntent
+
+    override fun setRetainMode() {
+        retainViewMode = RetainViewMode.RETAIN_DETACH
+    }
 }

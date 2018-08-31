@@ -12,6 +12,10 @@ sealed class FavoritesVS : BaseViewState {
 
     object UpdateContactState : FavoritesVS()
 
+    data class OpenSearchState(
+            val favorites: HashSet<Long>
+    ) : FavoritesVS()
+
     data class UpdateFavoritesState(
             val favorites: HashSet<Long>
     ) : FavoritesVS()

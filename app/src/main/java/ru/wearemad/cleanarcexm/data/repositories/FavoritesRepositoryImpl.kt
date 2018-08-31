@@ -1,5 +1,6 @@
 package ru.wearemad.cleanarcexm.data.repositories
 
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function
@@ -11,13 +12,18 @@ import ru.wearemad.cleanarcexm.di.global.scopes.Screen
 import ru.wearemad.cleanarcexm.domain.global.models.Contact
 import ru.wearemad.cleanarcexm.domain.global.repositories.FavoritesRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@Screen
+@Singleton
 class FavoritesRepositoryImpl
 @Inject constructor(
         private val appDatabase: AppDatabase,
         private val contactMapper: ContactMapper
 ) : FavoritesRepository {
+
+    init {
+        Log.d("MIINE", "init FavoritesRepositoryImpl")
+    }
 
     override fun updateContactFavorite(id: Long, isFavorite: Boolean): Observable<Unit> {
         return Observable.fromCallable {

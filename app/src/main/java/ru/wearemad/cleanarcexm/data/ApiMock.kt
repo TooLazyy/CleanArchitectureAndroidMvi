@@ -1,5 +1,6 @@
 package ru.wearemad.cleanarcexm.data
 
+import android.util.Log
 import io.reactivex.Observable
 import ru.wearemad.cleanarcexm.domain.api.ContactsApi
 import ru.wearemad.cleanarcexm.domain.global.models.Contact
@@ -10,6 +11,7 @@ class ApiMock : ContactsApi {
     private val contacts = mutableListOf<Contact>()
 
     init {
+        Log.d("MIINE", "init api")
         for (i in 0..15) {
             contacts.add(Contact(i.toLong(), "Name $i", "Surname $i",
                     "phone $i", "photo $i"))

@@ -12,8 +12,7 @@ import javax.inject.Inject
 class FavoritesPresenter
 @Inject constructor(
         private val interactor: FavoritesInteractor
-)
-    : MviBasePresenter<FavoritesView, FavoritesVS>() {
+) : MviBasePresenter<FavoritesView, FavoritesVS>() {
 
     override fun bindIntents() {
         val state1: Observable<FavoritesVS> =
@@ -59,10 +58,25 @@ class FavoritesPresenter
                                         FavoritesVS.ErrorState(it.message ?: "")
                                     }
                         }
+
+        val state4: Observable<FavoritesVS> =
+                intent(FavoritesView::openSearchIntent)
+                        .flatMap {
+                            interactor.getFavorites()
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .map {
+                                        FavoritesVS.OpenSearchState(it)
+                                    }
+                                    .cast(FavoritesVS::class.java)
+                                    .onErrorReturn {
+                                        FavoritesVS.ErrorState(it.message ?: "")
+                                    }
+                        }
         val state = Observable.merge(
                 state1,
                 state2,
-                state3)
+                state3,
+                state4)
 
         subscribeViewState(state, FavoritesView::render)
     }

@@ -29,6 +29,7 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
     private val refreshContactsIntent = PublishSubject.create<Unit>()
     private val updateContactIntent = PublishSubject.create<Pair<Long, Boolean>>()
     private val updateFavoritesIntent = PublishSubject.create<Unit>()
+    private val openSearchIntent = PublishSubject.create<Unit>()
 
     private val ivSearch: View by bindView(R.id.ivSearch1)
     private val loading: View by bindView(R.id.loading)
@@ -49,17 +50,8 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
     }
 
     override fun onViewCreated(itemView: View) {
-        refreshContactsIntent.onNext(Unit)
         ivSearch.setOnClickListener {
-            getParentRouter()?.pushController(
-                    RouterTransaction.with(
-                            ContactsSearchController(
-                                    adapter?.data ?: listOf(),
-                                    hashSetOf())
-                    ).tag(ContactsSearchController.TAG)
-                            .pushChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
-                            .popChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
-            )
+            openSearchIntent.onNext(Unit)
         }
     }
 
@@ -99,6 +91,17 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
                 //adapter?.favorites = state.favorites
                 adapter?.notifyDataSetChanged()
             }
+            is FavoritesVS.OpenSearchState -> {
+                getParentRouter()?.pushController(
+                        RouterTransaction.with(
+                                ContactsSearchController(
+                                        adapter?.data ?: listOf(),
+                                        state.favorites)
+                        ).tag(ContactsSearchController.TAG)
+                                .pushChangeHandler(FadeChangeHandler())
+                                .popChangeHandler(FadeChangeHandler())
+                )
+            }
         }
     }
 
@@ -114,9 +117,16 @@ class FavoritesController : BaseController<FavoritesView, FavoritesPresenter, Fa
         )
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        refreshContactsIntent.onNext(Unit)
+    }
+
     override fun updateContactIntent() = updateContactIntent
 
     override fun updateFavoritesIntent() = updateFavoritesIntent
+
+    override fun openSearchIntent() = openSearchIntent
 
     override fun setRetainMode() {
         retainViewMode = RetainViewMode.RETAIN_DETACH

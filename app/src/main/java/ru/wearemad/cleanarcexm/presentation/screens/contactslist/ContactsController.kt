@@ -35,7 +35,6 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
     private val ivSearch: View by bindView(R.id.ivSearch)
     private val loading: View by bindView(R.id.loading)
     private val recycler: RecyclerView by bindView(R.id.recycler)
-    private val root: ViewGroup by bindView(R.id.contacts_root)
 
     private var adapter: ContactsListAdapter? = null
 
@@ -60,8 +59,8 @@ class ContactsController : BaseController<ContactsListView, ContactsListPresente
                                     adapter?.data ?: listOf(),
                                     adapter?.favorites ?: hashSetOf())
                     ).tag(ContactsSearchController.TAG)
-                            .pushChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
-                            .popChangeHandler(CircularRevealChangeHandlerCompatJ(ivSearch, root))
+                            .pushChangeHandler(FadeChangeHandler())
+                            .popChangeHandler(FadeChangeHandler())
             )
         }
     }

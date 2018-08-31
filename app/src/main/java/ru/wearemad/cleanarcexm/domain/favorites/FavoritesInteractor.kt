@@ -9,6 +9,7 @@ class FavoritesInteractor
 @Inject constructor(
         private val repository: FavoritesRepository
 ) {
+
     fun getFavoriteUsers() = repository.getFavoriteUsers()
 
     fun updateContactFavorite(id: Long, isFavorite: Boolean) =

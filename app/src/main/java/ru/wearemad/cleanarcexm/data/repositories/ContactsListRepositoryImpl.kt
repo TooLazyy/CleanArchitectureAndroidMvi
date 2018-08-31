@@ -1,5 +1,6 @@
 package ru.wearemad.cleanarcexm.data.repositories
 
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -18,6 +19,10 @@ class ContactsListRepositoryImpl
         private val contactsListCommand: GetContactsListCommand,
         private val contactMapper: ContactMapper
 ) : ContactListRepository {
+
+    init {
+        Log.d("MIINE", "init ContactsListRepositoryImpl")
+    }
 
     override fun getContactsListFromServer(): Observable<List<Contact>> {
         //api call here

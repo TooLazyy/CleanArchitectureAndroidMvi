@@ -1,18 +1,24 @@
 package ru.wearemad.cleanarcexm.data.repositories
 
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import ru.wearemad.cleanarcexm.di.global.scopes.Screen
 import ru.wearemad.cleanarcexm.domain.global.models.Contact
 import ru.wearemad.cleanarcexm.domain.global.repositories.ContactsSearchRepository
 import ru.wearemad.cleanarcexm.extensions.applyObservableCompute
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@Screen
 class ContactsSearchRepositoryImpl
 @Inject constructor() : ContactsSearchRepository {
+
+    init {
+        Log.d("MIINE", "init ContactsSearchRepositoryImpl")
+    }
 
     override fun searchContacts(query: String, contacts: List<Contact>): Observable<List<Contact>> {
         return Observable.fromCallable { contacts }

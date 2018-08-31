@@ -11,4 +11,6 @@ interface FavoritesView : BaseView {
     fun updateContactIntent(): Observable<Pair<Long, Boolean>>
 
     fun updateFavoritesIntent(): Observable<Unit>
+
+    fun openSearchIntent(): Observable<Unit>
 }
